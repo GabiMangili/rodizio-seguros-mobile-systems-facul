@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/presentation/components/bottom_screens.dart';
-import 'package:untitled/presentation/screens/insurances.dart';
+import 'package:untitled/presentation/screens/insurances_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
