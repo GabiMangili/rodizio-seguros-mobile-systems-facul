@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/models/insurance.dart';
 import 'package:untitled/presentation/components/bottom_screens.dart';
+import 'package:untitled/presentation/components/drawers/navigation_drawer.dart';
+
+import '../components/drawers/navigation_end_drawer.dart';
 
 class InsurancesScreen extends StatefulWidget {
   const InsurancesScreen({Key? key}) : super(key: key);
@@ -23,12 +26,17 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
 
   List listInsurances = [];
 
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
+        drawer: NavigationDrawer(children: [NavigationStartDrawer()]),
+        endDrawer: NavigationDrawer(children: [NavigationEndDrawer()]),
         appBar: appBar(),
         body: bodyAll(),
       ),
@@ -42,14 +50,25 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
       leading: Row(
         children: [
           SizedBox(width: 25),
-          Icon(Icons.menu, color: Colors.black),
+          GestureDetector(
+              onTap: () {
+                scaffoldKey.currentState!.openDrawer();
+              },
+              child: Icon(Icons.menu, color: Colors.black)
+          ),
         ],
       ),
       title: ImageIcon(AssetImage("assets/icons/rodizio_logo.png"), color: Colors.black, size: 150),
       actions: [
-        Icon(Icons.person_outlined, color: Colors.black),
+        GestureDetector(
+            onTap: (){
+              scaffoldKey.currentState!.openEndDrawer();
+            },
+            child: Icon(Icons.person_outlined, color: Colors.black)
+        ),
         SizedBox(width: 30)
       ],
+
     );
   }
 
