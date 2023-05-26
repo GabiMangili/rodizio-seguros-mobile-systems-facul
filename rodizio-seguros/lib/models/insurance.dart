@@ -21,4 +21,3 @@ class Insurance{
 //       vehicle = Vehicle.fromMap(map[""]),
 //       driver = Driver.fromMap(map[""]);
 }
-

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled/models/insurance.dart';
 import 'package:untitled/presentation/components/bottom_screens.dart';
 import 'package:untitled/presentation/components/drawers/navigation_drawer.dart';
+import 'package:untitled/presentation/screens/login_screen.dart';
 
 import '../components/drawers/navigation_end_drawer.dart';
 
@@ -208,19 +209,23 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Center(
-            child: Text(
-              "LISTAR SEGURO",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+            child: Center(
+              child: Text(
+                "LISTAR SEGURO",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700
+                ),
               ),
             ),
           ),
 
           SizedBox(height: 24),
-
 
           ListView.separated(
               itemCount: listInsurances.length,
