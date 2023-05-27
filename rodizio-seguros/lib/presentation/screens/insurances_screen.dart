@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/controllers/vehicle_controller.dart';
 import 'package:untitled/models/insurance.dart';
+import 'package:untitled/models/vehicle.dart';
 import 'package:untitled/presentation/components/bottom_screens.dart';
 import 'package:untitled/presentation/components/drawers/navigation_drawer.dart';
 import 'package:untitled/presentation/screens/login_screen.dart';
@@ -24,10 +26,10 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
   TextEditingController birthController = TextEditingController(); //nascimento
 
   List<bool> buttonSelectionListController = [true, false];
-
   List listInsurances = [];
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  VehicleController vehicleController = VehicleController();
 
 
   @override
@@ -187,6 +189,9 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
                     child: buttonOption(text: "Enviar Notificação", isSelected: false)
                 ),
                 GestureDetector(
+                  onTap: (){
+                    vehicleController.postVehicle(vehicle: Vehicle(model: modelController.text, brand: brandController.text, year: 2000, plate: plateController.text));
+                  },
                     child: buttonOption(text: "Orçar", isSelected: true)
                 ),
               ],
