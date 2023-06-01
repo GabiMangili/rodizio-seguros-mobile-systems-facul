@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled/presentation/dialogs.dart';
 import 'package:untitled/presentation/screens/registration_screen.dart';
+import 'package:untitled/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -51,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
 
             Form(
+              key: formKey,
               child: Column(
                 children: [
                   textField(emailController, "E-mail"),
@@ -120,23 +124,41 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   buttonOption(){
-    return Container(
-      width: 172,
-      height: 40,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Center(
-        child: Text(
-          "ENTRAR",
-          style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-            fontWeight: FontWeight.bold
+    return GestureDetector(
+      onTap: (){
+        if(formKey.currentState!.validate()){
+          login();
+        }
+      },
+      child: Container(
+        width: 172,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Center(
+          child: Text(
+            "ENTRAR",
+            style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
       ),
     );
+  }
+
+  login() async {
+    try{
+      Dialogs.dialogLoadingRegistration(context);
+      await context.read<AuthService>().login(emailController.text.replaceAll(" ", ""), passwordController.text);
+      Navigator.of(context).pop();
+    } on AuthException catch(e){
+      Navigator.of(context).pop();
+      Dialogs.showMessage(context, e.message);
+    }
   }
 }

@@ -1,11 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled/services/auth_service.dart';
 
 class NavigationEndDrawer extends StatelessWidget {
   const NavigationEndDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    User user = context.read<AuthService>().getUser();
+    String firstName;
+    if(user.displayName != null){
+      firstName = user.displayName!.split(" ")[0];
+    } else {
+      firstName = user.email!.split("@")[0];
+    }
     return Column(
       children: [
         Container(
@@ -14,7 +24,7 @@ class NavigationEndDrawer extends StatelessWidget {
           child: Container(
             child: Center(
               child: Text(
-                "OLÁ, (USUÁRIO)! SEJA BEM VINDO(A)",
+                "OLÁ, ${firstName.toUpperCase()}! SEJA BEM VINDO(A)",
                 style: TextStyle(
                     color: Colors.white
                 ),
@@ -28,41 +38,18 @@ class NavigationEndDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: (){},
-                child: Container(
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(5)
-                  ),
-                  child: Center(
-                    child: textUpField("ENTRAR", Colors.white)
-                  )
-                ),
-              ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: (){},
-                child: Container(
-                  height: 42,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.black)
-                  ),
-                  child: Center(
-                      child: textUpField("CADASTRAR ", Colors.black)
-                  ),
-                ),
-              ),
 
               SizedBox(height: 30),
               Divider(color: Color.fromRGBO(233, 233, 233, 1), thickness: 1),
               SizedBox(height: 20),
 
-              Center(
-                  child: textUpField("SAIR", Colors.black)
+              GestureDetector(
+                onTap: (){
+                  context.read<AuthService>().logout();
+                },
+                child: Center(
+                    child: textUpField("SAIR", Colors.black)
+                ),
               )
             ],
           ),

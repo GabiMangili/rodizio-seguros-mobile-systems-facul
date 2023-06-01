@@ -1,6 +1,11 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/auth_service.dart';
+import '../dialogs.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -70,9 +75,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 )
             ),
 
-            SizedBox(height: 20),
+            SizedBox(height: 30),
 
-            buttonOption()
+            buttonOption(),
+
+            SizedBox(height: 30),
+
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                child: Text(
+                  "Voltar ao login",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -89,8 +111,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
              return "Campo obrigatório";
            }
            if(validateEmail){
-             if(!EmailValidator.validate(value)){
+             if(!EmailValidator.validate(value.replaceAll(" ", ""))){
                return "E-mail inválido";
+             }
+           }
+           if(isConfirm){
+             if(passwordController.text != passwordConfirmationController.text){
+               return "Senhas não conferem";
              }
            }
            return null;
@@ -128,7 +155,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   buttonOption(){
     return GestureDetector(
       onTap: (){
-        formKey.currentState!.validate();
+        if(formKey.currentState!.validate()){
+          register();
+        }
       },
       child: Container(
         width: 172,
@@ -149,5 +178,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  register() async {
+    try{
+      Dialogs.dialogLoadingRegistration(context);
+      await context.read<AuthService>().registerUser(emailController.text, passwordController.text).then((value) async {
+        User user = context.read<AuthService>().getUser();
+        await user.updateDisplayName(nameController.text);
+        user.reload();
+      });
+
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    } on AuthException catch(e){
+      Navigator.of(context).pop();
+      Dialogs.showMessage(context, e.message);
+    }
   }
 }

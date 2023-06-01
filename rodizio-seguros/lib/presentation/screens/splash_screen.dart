@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/auth_check/auth_check.dart';
 import 'package:untitled/presentation/components/bottom_screens.dart';
 import 'package:untitled/presentation/screens/insurances_screen.dart';
 
@@ -37,7 +38,7 @@ class SplashScreen extends StatelessWidget {
 
   _body(BuildContext context) {
       Future.delayed(Duration(seconds: 3), (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => InsurancesScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AuthCheck()));
       });
       return Center(
         child: Container(

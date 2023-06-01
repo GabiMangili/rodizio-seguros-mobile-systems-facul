@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "186264884469",
+    "project_id": "rodizio-seguros-code",
+    "storage_bucket": "rodizio-seguros-code.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186264884469:android:9f8f187f46180b74aae1bc",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJN8OIEuk0RwpxN95OMgPKhrUrXqaic0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
