@@ -16,6 +16,7 @@ class NavigationEndDrawer extends StatelessWidget {
     } else {
       firstName = user.email!.split("@")[0];
     }
+
     return Column(
       children: [
         Container(
@@ -38,7 +39,6 @@ class NavigationEndDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               SizedBox(height: 30),
               Divider(color: Color.fromRGBO(233, 233, 233, 1), thickness: 1),
               SizedBox(height: 20),
