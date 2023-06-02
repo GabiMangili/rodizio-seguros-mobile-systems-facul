@@ -1,5 +1,9 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled/controllers/vehicle_controller.dart';
 import 'package:untitled/models/insurance.dart';
 import 'package:untitled/models/vehicle.dart';
@@ -7,6 +11,7 @@ import 'package:untitled/presentation/components/bottom_screens.dart';
 import 'package:untitled/presentation/components/drawers/navigation_drawer.dart';
 import 'package:untitled/presentation/screens/login_screen.dart';
 
+import '../../services/auth_service.dart';
 import '../components/drawers/navigation_end_drawer.dart';
 
 class InsurancesScreen extends StatefulWidget {
@@ -30,7 +35,51 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   VehicleController vehicleController = VehicleController();
+  double valueInsurance = 0.0;
 
+  List listInsu = [
+    {
+    "email": "gabiimangiilii@gmail.com",
+    "nome": "Gabriela",
+    "insurances": [
+      {
+        "valor": 2000.00,
+        "status": "Aprovado",
+        "brand": "GM",
+        "model": "Astra",
+        "plate": "ABC-4321"
+      }
+    ]
+  },
+    {
+      "email": "gabiimangiilii@gmail.com",
+      "nome": "Gabriela",
+      "insurances": [
+        {
+          "valor": 3000.00,
+          "status": "Reprovado",
+          "brand": "Ford",
+          "model": "Ka",
+          "plate": "XYZ-4321"
+        }
+      ]
+    },
+    {
+      "email": "gabiimangiilii@gmail.com",
+      "nome": "Gabriela",
+      "insurances": [
+        {
+          "valor": 1500.00,
+          "status": "Em análise",
+          "brand": "Toyota",
+          "model": "Etios",
+          "plate": "ABC-1234"
+        }
+      ]
+    }
+  ];
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -120,97 +169,154 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
   }
 
   bodyBudget(){
+
+    User user = context.read<AuthService>().getUser();
+    String firstName;
+    if(user.displayName != null){
+      firstName = user.displayName!.split(" ")[0];
+    } else {
+      firstName = user.email!.split("@")[0];
+    }
+
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              "ORÇAMENTO SEGURO",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                "ORÇAMENTO SEGURO",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700
+                ),
               ),
             ),
-          ),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("MARCA"),
-          textField(brandController, "Marca"),
+            textUpField("MARCA"),
+            textField(brandController, "Marca"),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("MODELO"),
-          textField(modelController, "Modelo"),
+            textUpField("MODELO"),
+            textField(modelController, "Modelo"),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("PLACA"),
-          textField(plateController, "Placa"),
+            textUpField("PLACA"),
+            textField(plateController, "Placa"),
 
-          SizedBox(height: 42),
+            SizedBox(height: 42),
 
-          Center(
-            child: Text(
-              "DADOS DO PROPRIETÁRIO",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700
+            Center(
+              child: Text(
+                "DADOS DO PROPRIETÁRIO",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700
+                ),
               ),
             ),
-          ),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("NOME"),
-          textField(firstNameController, "Nome"),
+            textUpField("NOME"),
+            textField(firstNameController, "Nome"),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("SOBRENOME"),
-          textField(surnameController, "Sobrenome"),
+            textUpField("SOBRENOME"),
+            textField(surnameController, "Sobrenome"),
 
-          SizedBox(height: 24),
+            SizedBox(height: 24),
 
-          textUpField("DATA DE NASCIMENTO"),
-          textField(birthController, "dd/mm/aaaa"),
+            textUpField("DATA DE NASCIMENTO"),
+            textField(birthController, "dd/mm/aaaa"),
 
-          SizedBox(height: 42),
+            SizedBox(height: 42),
 
-          Container(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    child: buttonOption(text: "Enviar Notificação", isSelected: false)
-                ),
-                GestureDetector(
-                  onTap: (){
-                    vehicleController.postVehicle(vehicle: Vehicle(model: modelController.text, brand: brandController.text, year: 2000, plate: plateController.text));
-                  },
-                    child: buttonOption(text: "Orçar", isSelected: true)
-                ),
-              ],
+            Container(
+              height: 60,
+              child: Center(
+                child:
+                  // GestureDetector(
+                  //     child: buttonOption(text: "Enviar Notificação", isSelected: false)
+                  // ),
+                  GestureDetector(
+                    onTap: (){
+                      if(formKey.currentState!.validate()){
+                            var rand = Random();
+                            setState(() {
+                              valueInsurance = rand.nextDouble() * 10000;
+                            });
+
+                            print(valueInsurance);
+                            // vehicleController.postVehicle(vehicle: Vehicle(model: modelController.text, brand: brandController.text, year: 2000, plate: plateController.text));
+
+                            listInsu.add({
+                              "email": user.email,
+                              "nome": firstName,
+                              "insurances": [
+                                {
+                                  "valor": valueInsurance,
+                                  "status": "Aprovado",
+                                  "brand": brandController.text,
+                                  "model": modelController.text,
+                                  "plate": plateController.text
+                                }
+                              ]
+                            });
+                          }
+                        },
+                      child: buttonOption(text: "Orçar", isSelected: true)
+                  ),
+              ),
             ),
-          ),
 
-          BottomScreens()
-        ],
+            SizedBox(height: 20),
+
+            valueInsurance != 0 ? Visibility(
+              visible: valueInsurance != 0,
+                child: Center(child: Text("O valor do orçamento é de ${valueInsurance.toStringAsFixed(2)} reais.\nO orçamento foi enviado.", textAlign: TextAlign.center,))
+            ) : Container(),
+
+            BottomScreens()
+          ],
+        ),
       ),
     );
   }
 
   bodyListInsurance(){
 
-    listInsurances = [
-      setInsurance(status: "REPROVADO", vehicle: "ASTRA SS", brand: "GM", year: 2007, plate: "ABC-1234"),
-      setInsurance(status: "EM ANÁLISE", vehicle: "ASTRA SS", brand: "GM", year: 2007, plate: "ABC-1234"),
-      setInsurance(status: "APROVADO", vehicle: "ASTRA SS", brand: "GM", year: 2007, plate: "ABC-1234"),
-    ];
+    User user = context.read<AuthService>().getUser();
+    String firstName;
+    if(user.displayName != null){
+      firstName = user.displayName!.split(" ")[0];
+    } else {
+      firstName = user.email!.split("@")[0];
+    }
+
+
+    List<Insurance> listInsurancesUser = [];
+    listInsu.forEach((element) {
+      if(element["email"] == user.email) {
+        for(var i in element["insurances"]) {
+          listInsurancesUser.add(
+              setInsurance(status: i["status"],
+                  vehicle: i["model"],
+                  brand: i["brand"],
+                  plate: i["plate"],
+                  year: 2000));
+        }
+      }});
+
+    // List<Insurance> listInsurancesUser = listInsu.where((element) => element["email"] == user.email);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -233,16 +339,16 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
           SizedBox(height: 24),
 
           ListView.separated(
-              itemCount: listInsurances.length,
+              itemCount: listInsurancesUser.length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               separatorBuilder: (context, index) => SizedBox(height: 24),
               itemBuilder: (context, index){
-                Insurance insurance = listInsurances[index];
+                Insurance insurance = listInsurancesUser[index];
                 Color colorStatus;
-                if(insurance.status == "REPROVADO") {
+                if(insurance.status == "Reprovado") {
                   colorStatus = Colors.red;
-                } else if(insurance.status == "EM ANÁLISE") {
+                } else if(insurance.status == "Em análise") {
                   colorStatus = Color.fromRGBO(224, 121, 0, 1);
                 } else {
                   colorStatus = Colors.green;
@@ -277,7 +383,7 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          textUpField(insurance.status, color: colorStatus),
+                          textUpField(insurance.status.toUpperCase(), color: colorStatus),
                           SizedBox(height: 10),
                           textUpField(insurance.vehicle),
                           SizedBox(height: 10),
@@ -317,6 +423,9 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
       margin: EdgeInsets.only(top: 5),
       child: TextFormField(
         controller: controller,
+        validator: (value){
+          validatorSimple(value);
+        },
         maxLength: 40,
         decoration: InputDecoration(
           counterText: "",
@@ -365,5 +474,12 @@ class _InsurancesScreenState extends State<InsurancesScreen> {
     );
 
     return insurance;
+  }
+
+  validatorSimple(value){
+    if(value == null || value.isEmpty || value == ""){
+      return "Campo obrigatório";
+    }
+    return null;
   }
 }

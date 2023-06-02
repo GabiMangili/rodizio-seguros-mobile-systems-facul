@@ -1,0 +1,17 @@
+{
+  "jsondata": [
+    {
+      "email": "gabiimangiilii@gmail.com",
+      "nome": "Gabriela",
+      "insurances": [
+        {
+          "valor": 2000.00,
+          "status": "Reprovado",
+          "brand": "GM",
+          "model": "Astra",
+          "plate": "ABC-4321"
+        }
+      ]
+    }
+  ]
+}
